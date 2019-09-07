@@ -42,9 +42,9 @@
               buffer.push(`<h3 class="topic-timer-heading">`);
       
               let options = {
-                // timeLeft: statusUpdateAt.fromNow(),
+             
                 timeLeft: "in "+duration.format("w [weeks] , d [days] , h [hours] , m [minutes] , s [seconds]"),
-                // timeLeft: "in "+Math.floor(duration.asDays())+" Day/s" + moment.utc(duration.asMilliseconds()).format(":hh [Hours] :mm [Minutes] :ss [Seconds]"),
+               
                 duration: moment.duration(autoCloseHours, "hours").humanize()
               };
       
