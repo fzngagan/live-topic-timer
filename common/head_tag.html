@@ -43,7 +43,7 @@
       
               let options = {
              
-                timeLeft: "in "+duration.format("w [weeks] , d [days] , h [hours] , m [minutes] , s [seconds]"),
+                timeLeft: "in "+duration.format(settings.duration_format),
                
                 duration: moment.duration(autoCloseHours, "hours").humanize()
               };
