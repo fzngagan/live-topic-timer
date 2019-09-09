@@ -1,2 +1,5 @@
 duration_format:
   default: "w [weeks], d [days], h [hours], m [minutes], s [seconds]"
+rerender_time:
+  default: 360000 # an hour
+  min: 1000 # a second
