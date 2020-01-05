@@ -14,33 +14,37 @@
 
 <script type="text/discourse-plugin" version="0.8">
     const iconHTML = require('discourse-common/lib/icon-library').iconHTML;
+    const later = require("@ember/runloop").later;
+
     momentDurationFormatSetup(moment);
     api.modifyClass('component:topic-timer-info',{
-        buildBuffer(buffer) {
-            if (!this.executeAt) return;
-      
+          renderTopicTimer() {
+            if (!this.executeAt) {
+              this.set("showTopicTimer", null);
+              return;
+            }
+
             const topicStatus = this.topicClosed ? "close" : "open";
             const topicStatusKnown = this.topicClosed !== undefined;
             if (topicStatusKnown && topicStatus === this.statusType) return;
-      
+
             const statusUpdateAt = moment(this.executeAt);
             const duration = moment.duration(statusUpdateAt - moment());
             const minutesLeft = duration.asMinutes();
-      
+
             if (minutesLeft >= 0) {
+
               let autoCloseHours = this.duration || 0;
-      
-              buffer.push(`<h3 class="topic-timer-heading">`);
-      
+
               let options = {
                 timeLeft: "in "+duration.format(settings.duration_format),
                 duration: moment.duration(autoCloseHours, "hours").humanize()
               };
-      
+
               const categoryId = this.categoryId;
               if (categoryId) {
                 const category = Category.findById(categoryId);
-      
+
                 options = Object.assign(
                   {
                     categoryName: category.get("slug"),
@@ -49,29 +53,19 @@
                   options
                 );
               }
-      
-              buffer.push(
-                `<span title="${moment(this.executeAt).format("LLLL")}">${iconHTML(
-                  "far-clock"
-                )} ${I18n.t(this._noticeKey(), options)}</span>`
-              );
-              if (this.removeTopicTimer && this.canRemoveTimer) {
-                buffer.push(
-                  `<button class="btn topic-timer-remove no-text" title="${I18n.t(
-                    "post.controls.remove_timer"
-                  )}">${iconHTML("trash-alt")}</button>`
-                );
-              }
-              buffer.push("</h3>");
-      
+
+              this.set("title", `${moment(this.executeAt).format("LLLL")}`.htmlSafe());
+              this.set("notice", `${I18n.t(this._noticeKey(), options)}`.htmlSafe());
+              this.set("showTopicTimer", true);
+
               // TODO Sam: concerned this can cause a heavy rerender loop
-              if (!Ember.testing) {
-                this._delayedRerender = Ember.run.later(
-                  this,
-                  this.rerender,
-                  settings.rerender_time
-                );
+              if (ENV.environment !== "test") {
+                this._delayedRerender = later(() => {
+                  this.renderTopicTimer();
+                }, settings.rerender_time);
               }
+            } else {
+              this.set("showTopicTimer", null);
             }
           },
     })
