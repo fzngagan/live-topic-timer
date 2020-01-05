@@ -37,7 +37,7 @@
               let autoCloseHours = this.duration || 0;
 
               let options = {
-                timeLeft: "in "+duration.format(settings.duration_format),
+                timeLeft: I18n.t(themePrefix("delimiter"))+" "+duration.format(settings.duration_format),
                 duration: moment.duration(autoCloseHours, "hours").humanize()
               };
 

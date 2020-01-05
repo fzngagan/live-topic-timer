@@ -1,4 +1,5 @@
 en:
+  delimiter: "in"
   theme_metadata:
     settings:
       duration_format: "This setting determnines how the topic timer will display the remaining time. This is the <a href='https://github.com/jsmreese/moment-duration-format#template'>link</a> you should refer for setting your custom format."
